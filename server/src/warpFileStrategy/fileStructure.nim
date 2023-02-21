@@ -1,4 +1,4 @@
-import uuids
+from uuids import nil
 
 type
   FileStructure* = ref object
@@ -18,9 +18,20 @@ type
     record: seq[int32]
   
   RecordHeader* = ref object
-    key: UUID
+    recordKey: uuids.UUID
     recordSize: int32
     recordOffset: uint64
 
+proc newWarpFileStructure*(): FileStructure =
+  var fileHeader = FileHeader(
+    version: 1,
+    recordCount: 0,
+    dataSectionSize: 0
+  )
 
-# var w: WarpFileStructure
+  var recordSection = RecordSection()
+
+  result = FileStructure(
+    fileHeader: fileHeader,
+    recordSection: recordSection
+  )
