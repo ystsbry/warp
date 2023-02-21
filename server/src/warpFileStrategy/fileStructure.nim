@@ -12,6 +12,7 @@ type
 
   RecordSection* = ref object
     records: seq[Record]
+    offset: uint16
     
   Record* = ref object
     recordHeader: RecordHeader
@@ -20,7 +21,6 @@ type
   RecordHeader* = ref object
     recordKey: uuids.UUID
     recordSize: int32
-    recordOffset: uint64
 
 proc newWarpFileStructure*(): FileStructure =
   var fileHeader = FileHeader(
