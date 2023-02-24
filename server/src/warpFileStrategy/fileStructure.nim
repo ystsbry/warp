@@ -7,12 +7,12 @@ type
 
   FileHeader* = ref object
     version*:  byte
-    recordCount*: int32
+    recordCount*: uint32
     dataSectionSize*: uint64
 
   RecordSection* = ref object
-    records: seq[Record]
-    offset: uint16
+    offset: int
+    records: ref seq[Record]
     
   Record* = ref object
     recordHeader*: RecordHeader
@@ -23,6 +23,11 @@ type
     recordSize*: uint64
     userKey*: string
 
+proc sizeof(fileHeader: FileHeader): int =
+  result += fileHeader.version.sizeof()
+  result += fileHeader.recordCount.sizeof()
+  result += fileHeader.dataSectionSize.sizeof()
+
 proc newWarpFileInstance*(): FileStructure =
   var fileHeader = FileHeader(
     version: 1,
@@ -30,9 +35,20 @@ proc newWarpFileInstance*(): FileStructure =
     dataSectionSize: 0
   )
 
-  var recordSection = RecordSection(offset: 13)
+  var recordSection = RecordSection(
+    records: new seq[Record],
+    offset: sizeof(fileHeader)
+  )
 
   result = FileStructure(
     fileHeader: fileHeader,
     recordSection: recordSection
   )
+
+# operation check
+var fh: FileHeader = FileHeader(
+  version: 1,
+  recordCount: 0,
+  dataSectionSize: 0
+)
+echo fh.sizeof()
