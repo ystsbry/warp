@@ -42,7 +42,7 @@ proc newWarpFileInstance*(): FileStructure =
     recordSection: recordSection
   )
 
-# operation check
+# operation sample
 var fh: FileHeader = FileHeader(
   version: 1,
   recordCount: 0

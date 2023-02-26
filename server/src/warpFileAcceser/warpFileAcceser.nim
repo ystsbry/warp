@@ -1,5 +1,7 @@
 import warpFileStructure
-import std/streams
+import std/streams, os
+
+const FILE_PATH = "db.warp"
 
 type
   WarpFileAcceser* = ref object
@@ -15,11 +17,18 @@ proc newWarpFileAcceser*(): WarpFileAcceser =
     records: new seq[Record]
   )
 
-  var warpFileStream = newFileStream("../../../db.warp", FileMode.fmWrite)
+  var warpFileStream: FileStream
+  if fileExists(FILE_PATH):
+    warpFileStream = openFileStream(FILE_PATH, FileMode.fmWrite)
+  else:
+    warpFileStream = newFileStream(FILE_PATH, FileMode.fmWrite)
+    # 新しくファイルを作った場合はヘッダーの書き込み
+    warpFileStream.write(fileHeader.version)
+    warpFileStream.write(fileHeader.recordCount)
+    warpFileStream.write(recordSection.offset)
+
   defer: warpFileStream.close()
-
-  warpFileStream.write(fileHeader.version)
-  warpFileStream.write(fileHeader.recordCount)
-  warpFileStream.write(recordSection.offset)
-
   result = WarpFileAcceser()
+
+# operation sample
+discard newWarpFileAcceser()
