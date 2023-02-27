@@ -4,7 +4,7 @@ import warpFileStructure, warpFileStreamWriter
 const FILE_PATH = "db.warp"
 
 type
-  WarpFileAcceser* = ref object
+  WarpFileAcceser* = FileStream
 
 proc newWarpFileAcceser*(): WarpFileAcceser =
   var fileHeader = FileHeader(
@@ -20,7 +20,7 @@ proc newWarpFileAcceser*(): WarpFileAcceser =
     warpFileStream.writeHeader(fileHeader)
 
   defer: warpFileStream.close()
-  result = WarpFileAcceser()
+  result = warpFileStream
 
 # operation sample
 discard newWarpFileAcceser()
