@@ -10,7 +10,6 @@ type
     recordCount*: uint32
 
   RecordSection* = ref object
-    offset*: int
     records*: ref seq[Record]
     
   Record* = ref object
@@ -22,7 +21,7 @@ type
     recordSize*: uint64
     userKey*: string
 
-proc sizeof(fileHeader: FileHeader): int =
+proc sizeof*(fileHeader: FileHeader): int =
   result += fileHeader.version.sizeof()
   result += fileHeader.recordCount.sizeof()
 
@@ -33,8 +32,7 @@ proc newWarpFileInstance*(): FileStructure =
   )
 
   var recordSection = RecordSection(
-    records: new seq[Record],
-    offset: sizeof(fileHeader)
+    records: new seq[Record]
   )
 
   result = FileStructure(
