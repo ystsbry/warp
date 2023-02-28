@@ -1,7 +1,6 @@
 import std/streams, os
-import warpFileStructure, warpFileStreamWriter
-
-const FILE_PATH = "db.warp"
+from uuids import nil
+import warpFileStructure, warpFileStreamWriter, warpFilePath
 
 type
   WarpFileAcceser* = FileStream
@@ -23,4 +22,20 @@ proc newWarpFileAcceser*(): WarpFileAcceser =
   result = warpFileStream
 
 # operation sample
+const RECORD_DATA = "record data"
+
 discard newWarpFileAcceser()
+var warpFileStream = openFileStream(FILE_PATH, FileMode.fmWrite)
+
+var recordHeader = RecordHeader(
+  recordKey: uuids.genUUID(),
+  recordSize: RECORD_DATA.len(),
+  userKey: "sker"
+)
+
+var record = Record(
+  recordHeader: recordHeader,
+  record: RECORD_DATA
+)
+
+warpFileStream.writeRecord(record)
